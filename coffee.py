@@ -4,14 +4,25 @@ class coffee:
        self.temp = temp_espresso # since every coffee starts as just an espresso shot, the mass and temp of the shot are the only arguments needed to initalise the object
        self.mass_ice = 0
        self.mass_milk = 0
-       self.mass_water = 0
+       self.mass_water = 0 # water from melted ice
        self.mass_espresso = mass_espresso
 
 
    
     @property
-    def proportion_of_liquid_which_is_milk(self):
-        return self.mass_milk / (self.mass_milk + self.mass_water + self.mass_espresso)
+    def percentage_of_liquid_which_is_milk(self):
+        return 100 * self.mass_milk / (self.mass_milk + self.mass_water + self.mass_espresso)
+    
+    
+    # We count espresso in the water percentage since it contributes to wateriness
+    @property
+    def percentage_of_liquid_which_is_water(self):
+        return 100 * (self.mass_water + self.mass_espresso) / (self.mass_milk + self.mass_water + self.mass_espresso)
+    
+    # Espresso also has has it's own percentage stat since we want to use that as a measure of how strong the coffee flavour is
+    @property
+    def percentage_of_liquid_which_is_espresso(self):
+        return 100 * self.mass_espresso / (self.mass_milk + self.mass_water + self.mass_espresso)
    
     @property
     def mass_liquid(self): # the mass of liquid in the cup
@@ -39,7 +50,7 @@ class coffee:
         if self.mass_ice > 0:
             # Calculates how much ice melts in this time step
             melt = min(self.mass_ice, melt_rate * self.temp)
-            print(melt)
+            print(round(melt,1))
             
             # Calculates the energy needed to melt the ice and subtracts it from the total
             energy_total -= melt * latent_heat_fusion
